@@ -3,12 +3,19 @@ from flask_cors import CORS
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
-from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "https://cis475-final.ch37.online",
+            "http://cis475-final.ch37.online"
+        ]
+    }
+})
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -32,7 +39,7 @@ You help with:
 def home():
     return send_from_directory("static", "chatbot.html")
 
-@app.route("/api/chat", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 def chat():
     user_message = request.json.get("message")
 
